@@ -2,15 +2,23 @@ list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 
 if(BTCPP_GROOT_INTERFACE)
     find_package(ZeroMQ REQUIRED)
-    list(APPEND BTCPP_EXTRA_LIBRARIES ${ZeroMQ_LIBRARIES})
+    list(APPEND BTCPP_EXTRA_LIBRARIES libzmq-static)
     list(APPEND BTCPP_EXTRA_INCLUDE_DIRS ${ZeroMQ_INCLUDE_DIRS})
-    message(STATUS "ZeroMQ_LIBRARIES: ${ZeroMQ_LIBRARIES}")
+    message(STATUS "ZeroMQ_LIBRARIES: libzmq-static")
+    message(STATUS "ZeroMQ_INCLUDE_DIRS: ${ZeroMQ_INCLUDE_DIRS}")
 endif()
 
 if(BTCPP_SQLITE_LOGGING)
     find_package(SQLite3 REQUIRED)
-    list(APPEND BTCPP_EXTRA_LIBRARIES ${SQLite3_LIBRARIES})
-    message(STATUS "SQLite3_LIBRARIES: ${SQLite3_LIBRARIES}")
+    list(APPEND BTCPP_EXTRA_LIBRARIES SQLite::SQLite3)
+    list(APPEND BTCPP_EXTRA_INCLUDE_DIRS ${SQLite3_INCLUDE_DIRS})
+    message(STATUS "SQLite3_LIBRARIES: SQLite::SQLite3")
+    message(STATUS "SQLite3_INCLUDE_DIRS: ${SQLite3_INCLUDE_DIRS}")
+endif()
+
+# Add system libraries for Windows
+if(WIN32)
+    list(APPEND BTCPP_EXTRA_LIBRARIES iphlpapi ws2_32)
 endif()
 
 
