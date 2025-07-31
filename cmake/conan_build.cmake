@@ -4,20 +4,32 @@ if(BTCPP_GROOT_INTERFACE)
     find_package(ZeroMQ REQUIRED)
     # Use the Conan-provided libzmq target which is properly configured
     list(APPEND BTCPP_EXTRA_LIBRARIES libzmq)
+    list(APPEND BTCPP_EXTRA_INCLUDE_DIRS ${ZeroMQ_INCLUDE_DIRS})
     message(STATUS "ZeroMQ_LIBRARIES: libzmq (Conan target)")
+    message(STATUS "ZeroMQ_INCLUDE_DIRS: ${ZeroMQ_INCLUDE_DIRS}")
+    message(STATUS "ZeroMQ_LIBS: ${ZeroMQ_LIBRARIES}")
 endif()
 
 if(BTCPP_SQLITE_LOGGING)
     find_package(SQLite3 REQUIRED)
-    list(APPEND BTCPP_EXTRA_LIBRARIES sqlite3)
+    list(APPEND BTCPP_EXTRA_LIBRARIES SQLite::SQLite3)
     list(APPEND BTCPP_EXTRA_INCLUDE_DIRS ${SQLite3_INCLUDE_DIRS})
-    message(STATUS "SQLite3_LIBRARIES: sqlite3")
+    message(STATUS "SQLite3_LIBRARIES: SQLite::SQLite3")
     message(STATUS "SQLite3_INCLUDE_DIRS: ${SQLite3_INCLUDE_DIRS}")
 endif()
 
 # Add system libraries for Windows
 if(WIN32)
     list(APPEND BTCPP_EXTRA_LIBRARIES iphlpapi ws2_32)
+endif()
+
+# Set up target-specific variables for proper linking
+if(BTCPP_GROOT_INTERFACE)
+    set(BTCPP_ZEROMQ_TARGET libzmq)
+endif()
+
+if(BTCPP_SQLITE_LOGGING)
+    set(BTCPP_SQLITE_TARGET SQLite::SQLite3)
 endif()
 
 

@@ -47,8 +47,14 @@ mkdir build_release
 
 ### 步骤 2: 安装依赖
 ```bash
-conan install . -of build_release -s build_type=Release
+conan install . -of build_release -s build_type=Release --build=missing -s compiler.cppstd=17
 ```
+
+**重要说明：**
+- `-s compiler.cppstd=17` 设置Host Profile的C++标准为17，这是应用程序的编译标准
+- Conan会显示两个Profile：Host Profile（目标平台）和Build Profile（构建工具）
+- 主要关注Host Profile中的`compiler.cppstd=17`，这决定了你的代码使用C++17编译
+- Build Profile中的C++标准不影响最终应用程序，只影响构建工具
 
 ### 步骤 3: 配置 CMake
 ```bash
@@ -57,7 +63,7 @@ cmake -S . -B build_release -DCMAKE_TOOLCHAIN_FILE="build_release/conan_toolchai
 
 ### 步骤 4: 编译项目
 ```bash
-cmake --build build_release --parallel
+cmake --build build_release --config Release --parallel
 ```
 
 ## Debug 版本编译命令
@@ -69,7 +75,7 @@ mkdir build_debug
 
 ### 步骤 2: 安装依赖
 ```bash
-conan install . -of build_debug -s build_type=Debug --build=missing
+conan install . -of build_debug -s build_type=Debug --build=missing -s compiler.cppstd=17
 ```
 
 ### 步骤 3: 配置 CMake
@@ -79,7 +85,7 @@ cmake -S . -B build_debug -DCMAKE_TOOLCHAIN_FILE="build_debug/conan_toolchain.cm
 
 ### 步骤 4: 编译项目
 ```bash
-cmake --build build_debug --parallel
+cmake --build build_debug --config Debug --parallel
 ```
 
 ## 验证结果

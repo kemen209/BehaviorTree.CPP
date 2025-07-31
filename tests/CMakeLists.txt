@@ -56,5 +56,21 @@ else()
 endif()
 
 target_link_libraries(behaviortree_cpp_test ${BTCPP_LIBRARY} bt_sample_nodes foonathan::lexy)
-target_include_directories(behaviortree_cpp_test PRIVATE include ${PROJECT_SOURCE_DIR}/3rdparty)
+
+# Fix for Windows GTest include path issue
+if(WIN32 AND NOT ament_cmake_FOUND)
+    # Ensure GTest include directories are properly set for Windows
+    target_include_directories(behaviortree_cpp_test PRIVATE 
+        include 
+        ${PROJECT_SOURCE_DIR}/3rdparty
+        $<TARGET_PROPERTY:GTest::gtest,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:GTest::gtest_main,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+else()
+    target_include_directories(behaviortree_cpp_test PRIVATE 
+        include 
+        ${PROJECT_SOURCE_DIR}/3rdparty
+    )
+endif()
+
 target_compile_definitions(behaviortree_cpp_test PRIVATE BT_TEST_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}")
